@@ -91,7 +91,6 @@ def data_shaping(data_list, period):
   user_list = []
   shaped_data = []
   for data in data_list:
-    print(data)
     if period_start <= data['date'] and data['date'] < period_end\
       and data['lock'] in ['入室', '退室', '解錠']\
       and data['user'] != '':
