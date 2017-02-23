@@ -68,10 +68,16 @@ def input_data(filename):
 
 def data_shaping(data_list, period):
   # 2:00 -> 23:00
-  date_format = '%Y/%m/%d %H:%M'
+  date_format_list = ['%Y/%m/%d %H:%M','%Y-%m-%d %H:%M:%S']
   day_start = datetime.datetime.strptime(DAYSTART,'%H%M')
   for data in data_list:
-    data['date'] = datetime.datetime.strptime(data['date'],date_format)
+    for date_format in date_format_list:
+      try:
+        date = datetime.datetime.strptime(data['date'],date_format)
+        break
+      except:
+        pass
+    data['date'] = date
     data['date'] -= datetime.timedelta(hours=day_start.hour)
     data['date'] -= datetime.timedelta(minutes=day_start.minute)
 
