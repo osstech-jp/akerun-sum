@@ -57,9 +57,9 @@ def input_data(filename):
         lock = row[3]
         data = {'date': date, 'user': user, 'lock': lock}
         data_list.append(data)
-
       break
     except:
+      data_list.clear()
       pass
   if isinstance(encode,str):
     return data_list,encode
@@ -67,6 +67,7 @@ def input_data(filename):
     raise LookupError
 
 def data_shaping(data_list, period):
+
   # 2:00 -> 23:00
   date_format_list = ['%Y/%m/%d %H:%M','%Y-%m-%d %H:%M:%S']
   day_start = datetime.datetime.strptime(DAYSTART,'%H%M')
@@ -90,6 +91,7 @@ def data_shaping(data_list, period):
   user_list = []
   shaped_data = []
   for data in data_list:
+    print(data)
     if period_start <= data['date'] and data['date'] < period_end\
       and data['lock'] in ['入室', '退室', '解錠']\
       and data['user'] != '':
@@ -104,46 +106,25 @@ def data_shaping(data_list, period):
   # data reconstruction
   for data in mining_data:
     index = user_list.index(data['user'])
-    if data['lock'] == '入室':
-      if data['date'].day not in shaped_data[index]['writed_days']:
-        shaped_data[index]['timecard_data'].append({\
-          'day': data['date'].day, 'in_time': data['date']})
-        shaped_data[index]['writed_days'].append(data['date'].day)
 
-      else:
-        timecard_data_index = shaped_data[index]['writed_days'].index(data['date'].day)
-        if 'in_time' not in shaped_data[index]['timecard_data'][timecard_data_index]\
-          or shaped_data[index]['timecard_data'][timecard_data_index]['in_time'] \
-            > data['date']:
-          shaped_data[index]['timecard_data'][timecard_data_index]['in_time'] = data['date']
+    if data['date'].day not in shaped_data[index]['writed_days']:
+      shaped_data[index]['timecard_data'].append({'day': data['date'].day})
+      shaped_data[index]['writed_days'].append(data['date'].day)
+
+    timecard_data_index = shaped_data[index]['writed_days'].index(data['date'].day)
+
+    if data['lock'] == '入室':
+      if 'in_time' not in shaped_data[index]['timecard_data'][timecard_data_index]:
+        shaped_data[index]['timecard_data'][timecard_data_index]['in_time'] = data['date']
 
     elif data['lock'] == '退室':
-      if data['date'].day not in shaped_data[index]['writed_days']:
-        shaped_data[index]['timecard_data'].append({\
-          'day': data['date'].day, 'out_time': data['date']})
-        shaped_data[index]['writed_days'].append(data['date'].day)
-
-      else:
-        timecard_data_index = shaped_data[index]['writed_days'].index(data['date'].day)
-        if 'out_time' not in shaped_data[index]['timecard_data'][timecard_data_index]\
-          or shaped_data[index]['timecard_data'][timecard_data_index]['out_time'] \
-            < data['date']:
-          shaped_data[index]['timecard_data'][timecard_data_index]['out_time'] = data['date']
+      shaped_data[index]['timecard_data'][timecard_data_index]['out_time'] = data['date']
 
     elif data['lock'] == '解錠':
-      if data['date'].day not in shaped_data[index]['writed_days']:
-        shaped_data[index]['timecard_data'].append({\
-          'day': data['date'].day, 'in_time': data['date']})
-        shaped_data[index]['writed_days'].append(data['date'].day)
+      if 'in_time' not in shaped_data[index]['timecard_data'][timecard_data_index]:
+        shaped_data[index]['timecard_data'][timecard_data_index]['in_time'] = data['date']
       else:
-        timecard_data_index = shaped_data[index]['writed_days'].index(data['date'].day)
-        if 'in_time' in shaped_data[index]['timecard_data'][timecard_data_index]:
-          shaped_data[index]['timecard_data'][timecard_data_index]['out_time'] = data['date']
-
-        elif 'out_time' in shaped_data[index]['timecard_data'][timecard_data_index]\
-          and shaped_data[index]['timecard_data'][timecard_data_index]['out_time'] \
-            < data['date']:
-          shaped_data[index]['timecard_data'][timecard_data_index]['out_time'] = data['date']
+        shaped_data[index]['timecard_data'][timecard_data_index]['out_time'] = data['date']
 
   # data totalization
   for data in shaped_data:
@@ -154,12 +135,15 @@ def data_shaping(data_list, period):
       if 'in_time' in timecard_data\
         and 'out_time' in timecard_data:
         diff = timecard_data['out_time'] - timecard_data['in_time']
-        diff_sec = diff.seconds
-        diff_min = diff_sec / 60
-        diff_min = math.floor(diff_min/ROUNDDOWNTIME)*ROUNDDOWNTIME
-        diff_hour = diff_min / 60
+        if diff.days < 0:
+          timecard_data['working_hours'] = 0
+        else:
+          diff_sec = diff.seconds
+          diff_min = diff_sec / 60
+          diff_min = math.floor(diff_min/ROUNDDOWNTIME)*ROUNDDOWNTIME
+          diff_hour = diff_min / 60
 
-        timecard_data['working_hours'] = diff_hour
+          timecard_data['working_hours'] = diff_hour
         total_working_hours += diff_hour
 
       else:
