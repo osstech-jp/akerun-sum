@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/osstech-jp/akerun-sum.svg?branch=master)](https://travis-ci.org/osstech-jp/akerun-sum)
+
 ### 入退出集計プログラム
 
 ### 以下の環境で動作確認
@@ -12,7 +14,7 @@
   akerun-sum.py -i input-sjis.csv -o output-sjis.csv -d 201610
   ```
 
-    社員数やレコードの数はリストで管理しているため無制限
+社員数やレコードの数はリストで管理しているため無制限
 
 [2017/2/14]
 入力ファイルの文字コードを識別し、
