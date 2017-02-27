@@ -3,9 +3,9 @@
 # test tool
 
 diff_outputfile() {
-  outfile = $1
-  orgfile = $2
-  errmasage = "err when use $1"
+  outfile=$1
+  orgfile=$2
+  errmasage="err when use $1"
   diff $outfile $orgfile > log.csv
   if [ $? -ne 0 ]; then
     echo $errmasage
