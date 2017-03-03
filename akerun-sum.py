@@ -12,14 +12,22 @@ DAYSTART = '0300'
 ROUNDDOWNTIME = 15
 
 def option_parser():
-  usage = 'Usage: python {} [-i <input filename>] [-o <output filename>] [-d <period(yyyymm)>]'\
+  usage = 'Usage: python {} \
+  -i <input filename> -o <output filename> \
+  -d <period(yyyymm)> [-f formatnumber]'\
            .format(__file__)
   arguments = sys.argv
-  if len(arguments) != 7:
+  if len(arguments) != 7 and len(arguments) != 9:
     print(usage)
     sys.exit()
 
-  for index in [1,3,5]:
+  index_number = [1,3,5]
+  if len(arguments) == 9:
+    index_number = [1,3,5,7]
+
+# default
+  format_num = 0
+  for index in index_number:
     option = arguments[index]
     if option == '-i':
       input_filename = arguments[index+1]
@@ -27,13 +35,19 @@ def option_parser():
       output_filename = arguments[index+1]
     elif option == '-d':
       period = arguments[index+1]
+    elif option == '-f':
+      format_num = int(arguments[index+1])
+      if format_num not in [0,1]:
+        print('This format number is not exist.')
+        sys.exit()
     else :
       print(usage)
       sys.exit()
 
   return {'input_filename' : input_filename,
           'output_filename' : output_filename,
-          'period' : period}
+          'period' : period,
+          'format_num' : format_num}
 
 def input_data(filename):
 
@@ -155,7 +169,77 @@ def data_shaping(data_list, period):
 
   return shaped_data
 
-def output_data(filename, encode, shaped_data):
+def output_data0(filename, encode, shaped_data):
+# make datelist 
+  day_list = []
+  for data in shaped_data:
+    for timecard in data['timecard_data']:
+      if timecard['day'] not in day_list:
+        day_list.append(timecard['day'])
+  day_list.sort()
+
+  period = shaped_data[0]['period']
+
+  header = ['氏名','就業日数','就業時間']
+  for day in day_list:
+    day_str = period[0:4] + '/'\
+             + str(int(period[4:6])) + '/'\
+             + str(day)
+    header.append(day_str + '入')
+    header.append(day_str + '退')
+    header.append(day_str + '時')
+
+  with codecs.open(filename, 'w', encode) as f:
+    writer = csv.writer(f, lineterminator = os.linesep)
+    writer.writerow(header)
+    for data in shaped_data:
+      row = [data['name'],data['total_working_days'],data['total_working_hours']]
+      curr_index = 0
+      writedata_index = 0
+      while curr_index < len(day_list):
+        if writedata_index < len(data['timecard_data'])\
+          and data['timecard_data'][writedata_index]['day'] == day_list[curr_index]:
+          timecard = data['timecard_data'][writedata_index]
+          day_start = datetime.datetime.strptime(DAYSTART,'%H%M')
+          if 'in_time' in timecard:
+            # 23:00 -> 26:00
+            timecard['in_time'] += datetime.timedelta(minutes=day_start.minute)
+            timecard['in_time'] += datetime.timedelta(hours=day_start.hour)
+            hour = timecard['in_time'].hour
+            if hour < day_start.hour:
+              hour += 24
+
+            in_time_str = str(hour) + ':'\
+                        + timecard['in_time'].strftime('%M')
+          else:
+            in_time_str = ''
+
+          if 'out_time' in timecard:
+            # 23:00 -> 26:00
+            timecard['out_time'] += datetime.timedelta(minutes=day_start.minute)
+            timecard['out_time'] += datetime.timedelta(hours=day_start.hour)
+            hour = timecard['out_time'].hour
+            if hour < day_start.hour:
+              hour += 24
+            out_time_str = str(hour) + ':'\
+                         + timecard['out_time'].strftime('%M')
+          else:
+            out_time_str = ''
+
+          row.append(in_time_str)
+          row.append(out_time_str)
+          row.append(timecard['working_hours'])
+          writedata_index += 1
+        else:
+          row.append('')
+          row.append('')
+          row.append('')
+        curr_index += 1
+
+      writer.writerow(row)
+      row.clear()
+
+def output_data1(filename, encode, shaped_data):
   with codecs.open(filename, 'w', encode) as f:
     writer = csv.writer(f, lineterminator = os.linesep)
     for data in shaped_data:
@@ -190,7 +274,7 @@ def output_data(filename, encode, shaped_data):
           hour = timecard['out_time'].hour
           if hour < day_start.hour:
             hour += 24
-          out_time_str = str(timecard['out_time'].hour) + ':'\
+          out_time_str = str(hour) + ':'\
                        + timecard['out_time'].strftime('%M')
         else:
           out_time_str = ''
@@ -205,7 +289,10 @@ if __name__ == '__main__':
   commandline_vars = option_parser()
   data_list,encode = input_data(commandline_vars['input_filename'])
   shaped_data = data_shaping(data_list, commandline_vars['period'])
-  output_data(commandline_vars['output_filename'], encode, shaped_data)
+  if commandline_vars['format_num'] == 0:
+    output_data0(commandline_vars['output_filename'], encode, shaped_data)
+  elif commandline_vars['format_num'] == 1:
+    output_data1(commandline_vars['output_filename'], encode, shaped_data)
 
 
 
