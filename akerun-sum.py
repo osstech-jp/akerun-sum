@@ -66,7 +66,6 @@ def input_data(filename):
             f = codecs.open(filename, 'r', encoding)
             encode = encoding
             reader = csv.reader(f)
-            header = next(reader)
 
             for row in reader:
                 date = row[0]
