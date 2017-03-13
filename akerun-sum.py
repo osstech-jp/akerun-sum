@@ -1,4 +1,5 @@
-﻿# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*- vim:shiftwidth=4:expandtab:
 
 import math
 import calendar
@@ -26,7 +27,7 @@ def option_parser():
     if len(arguments) == 9:
         index_number = [1, 3, 5, 7]
 
-# default
+    # default
     format_num = 0
     for index in index_number:
         option = arguments[index]
@@ -52,7 +53,6 @@ def option_parser():
 
 
 def input_data(filename):
-
     lookup = ('utf_8', 'euc_jp', 'euc_jis_2004', 'euc_jisx0213',
               'shift_jis', 'shift_jis_2004', 'shift_jisx0213',
               'iso2022jp', 'iso2022_jp_1', 'iso2022_jp_2', 'iso2022_jp_3',
@@ -65,7 +65,6 @@ def input_data(filename):
             f = codecs.open(filename, 'r', encoding)
             encode = encoding
             reader = csv.reader(f)
-            header = next(reader)
 
             for row in reader:
                 date = row[0]
@@ -84,7 +83,6 @@ def input_data(filename):
 
 
 def data_shaping(data_list, period):
-
     # 2:00 -> 23:00
     date_format_list = ['%Y/%m/%d %H:%M', '%Y-%m-%d %H:%M:%S']
     day_start = datetime.datetime.strptime(DAYSTART, '%H%M')

@@ -26,7 +26,7 @@ NFCカードのドアキー[アケルン](https://akerun.com/)の入退出記録
 
 
 ### 想定している入力ファイル
-DATE,AKERUN,USER,LOCK,CLIENTのカラムを持つcsvファイル
+DATE,AKERUN,USER,LOCK,CLIENTのカラムを持つCSVファイル
 
 ##### DATE
 日付データ  
