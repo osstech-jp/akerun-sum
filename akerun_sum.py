@@ -58,28 +58,17 @@ def input_data(filename):
               'iso2022jp', 'iso2022_jp_1', 'iso2022_jp_2', 'iso2022_jp_3',
               'iso2022_jp_ext', 'latin_1', 'ascii')
     encode = None
-    data_list = []
 
     for encoding in lookup:
         try:
             f = codecs.open(filename, 'r', encoding)
             encode = encoding
-            reader = csv.reader(f)
-
-            for row in reader:
-                date = row[0]
-                user = row[2]
-                lock = row[3]
-                data = {'date': date, 'user': user, 'lock': lock}
-                data_list.append(data)
-            break
+            reader = csv.DictReader(f)
+            data_list = [d for d in reader]
+            return data_list, encode
         except:
-            data_list.clear()
-            pass
-    if isinstance(encode, str):
-        return data_list, encode
-    else:
-        raise LookupError
+            continue
+    raise LookupError
 
 
 def data_shaping(data_list, period):
