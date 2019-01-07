@@ -12,7 +12,7 @@ import os
 DAYSTART = '0300'
 ROUNDDOWNTIME = 15
 
-KEYS = {'date': 'date', 'user': 'user', 'lock': 'lock'}
+KEYS = {'date': 'DATE', 'user': 'USER', 'lock': 'LOCK'}
 
 
 def option_parser():
