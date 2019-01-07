@@ -12,6 +12,8 @@ import os
 DAYSTART = '0300'
 ROUNDDOWNTIME = 15
 
+KEYS = {'date': 'date', 'user': 'user', 'lock': 'lock'}
+
 
 def option_parser():
     usage = 'Usage: python {} \
@@ -78,9 +80,9 @@ def data_shaping(data_list, period):
     for data in data_list:
         for date_format in date_format_list:
             try:
-                data['date'] = datetime.datetime.strptime(data['date'], date_format)
-                data['date'] -= datetime.timedelta(hours=day_start.hour)
-                data['date'] -= datetime.timedelta(minutes=day_start.minute)
+                data[KEYS['date']] = datetime.datetime.strptime(data[KEYS['date']], date_format)
+                data[KEYS['date']] -= datetime.timedelta(hours=day_start.hour)
+                data[KEYS['date']] -= datetime.timedelta(minutes=day_start.minute)
                 break
             except:
                 pass
@@ -93,40 +95,40 @@ def data_shaping(data_list, period):
     user_list = []
     shaped_data = []
     for data in data_list:
-        if isinstance(data['date'], str):
+        if isinstance(data[KEYS['date']], str):
             continue
-        if period_start <= data['date'] and data['date'] < period_end\
-                and data['lock'] in ['入室', '退室', '解錠']\
-                and data['user'] != '':
+        if period_start <= data[KEYS['date']] and data[KEYS['date']] < period_end\
+                and data[KEYS['lock']] in ['入室', '退室', '解錠']\
+                and data[KEYS['user']] != '':
             mining_data.append(data)
-            if data['user'] not in user_list:
-                user_list.append(data['user'])
+            if data[KEYS['user']] not in user_list:
+                user_list.append(data[KEYS['user']])
                 shaped_data.append({
-                    'name': data['user'], 'timecard_data': [],
+                    'name': data[KEYS['user']], 'timecard_data': [],
                     'writed_days': [], 'period': period})
 
     # data reconstruction
     for data in mining_data:
-        index = user_list.index(data['user'])
+        index = user_list.index(data[KEYS['user']])
 
-        if data['date'].day not in shaped_data[index]['writed_days']:
-            shaped_data[index]['timecard_data'].append({'day': data['date'].day})
-            shaped_data[index]['writed_days'].append(data['date'].day)
+        if data[KEYS['date']].day not in shaped_data[index]['writed_days']:
+            shaped_data[index]['timecard_data'].append({'day': data[KEYS['date']].day})
+            shaped_data[index]['writed_days'].append(data[KEYS['date']].day)
 
-        timecard_data_index = shaped_data[index]['writed_days'].index(data['date'].day)
+        timecard_data_index = shaped_data[index]['writed_days'].index(data[KEYS['date']].day)
 
-        if data['lock'] == '入室':
+        if data[KEYS['lock']] == '入室':
             if 'in_time' not in shaped_data[index]['timecard_data'][timecard_data_index]:
-                shaped_data[index]['timecard_data'][timecard_data_index]['in_time'] = data['date']
+                shaped_data[index]['timecard_data'][timecard_data_index]['in_time'] = data[KEYS['date']]
 
-        elif data['lock'] == '退室':
-            shaped_data[index]['timecard_data'][timecard_data_index]['out_time'] = data['date']
+        elif data[KEYS['lock']] == '退室':
+            shaped_data[index]['timecard_data'][timecard_data_index]['out_time'] = data[KEYS['date']]
 
-        elif data['lock'] == '解錠':
+        elif data[KEYS['lock']] == '解錠':
             if 'in_time' not in shaped_data[index]['timecard_data'][timecard_data_index]:
-                shaped_data[index]['timecard_data'][timecard_data_index]['in_time'] = data['date']
+                shaped_data[index]['timecard_data'][timecard_data_index]['in_time'] = data[KEYS['date']]
             else:
-                shaped_data[index]['timecard_data'][timecard_data_index]['out_time'] = data['date']
+                shaped_data[index]['timecard_data'][timecard_data_index]['out_time'] = data[KEYS['date']]
 
     # data totalization
     for data in shaped_data:
