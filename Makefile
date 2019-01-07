@@ -15,7 +15,7 @@ usage:
 init:
 	${MAKE} ${VENV}
 
-${VENV}: requirements.txt
+${VENV}:
 	${PYTHON} -m venv ${VENV}
 	${ACTIVATE} && pip install --upgrade pip setuptools
 	${ACTIVATE} && pip install -r requirements.txt

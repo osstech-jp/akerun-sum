@@ -89,14 +89,12 @@ def data_shaping(data_list, period):
     for data in data_list:
         for date_format in date_format_list:
             try:
-                date = datetime.datetime.strptime(data['date'], date_format)
+                data['date'] = datetime.datetime.strptime(data['date'], date_format)
+                data['date'] -= datetime.timedelta(hours=day_start.hour)
+                data['date'] -= datetime.timedelta(minutes=day_start.minute)
                 break
             except:
                 pass
-        data['date'] = date
-        data['date'] -= datetime.timedelta(hours=day_start.hour)
-        data['date'] -= datetime.timedelta(minutes=day_start.minute)
-
     # data mining
     period_start = datetime.datetime.strptime(period, '%Y%m')
     day_range = calendar.monthrange(period_start.year, period_start.month)[1]
@@ -106,6 +104,8 @@ def data_shaping(data_list, period):
     user_list = []
     shaped_data = []
     for data in data_list:
+        if isinstance(data['date'], str):
+            continue
         if period_start <= data['date'] and data['date'] < period_end\
                 and data['lock'] in ['入室', '退室', '解錠']\
                 and data['user'] != '':
