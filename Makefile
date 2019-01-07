@@ -27,3 +27,4 @@ test: ${VENV}
 .PHONY: clean
 clean:
 	rm -rf ${VENV}
+	rm -f log output.csv
