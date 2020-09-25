@@ -12,7 +12,7 @@ import os
 DAYSTART = '0300'
 ROUNDDOWNTIME = 15
 
-KEYS = {'date': 'DATE', 'user': 'USER', 'lock': 'LOCK'}
+KEYS = {'date': '日時', 'user': 'ユーザー名', 'lock': 'アクション'}
 
 
 def option_parser():

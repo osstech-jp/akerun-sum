@@ -16,6 +16,7 @@ diff_outputfile() {
     echo $errmasage
     exit $?;
   else
+    echo "$inputfile Success"
     rm log
   fi
 }
