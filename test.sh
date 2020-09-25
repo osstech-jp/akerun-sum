@@ -28,25 +28,25 @@ init() {
 
 init
 
-${SCRIPT} -i test/input-utf8.csv -o output.csv -d 201610 -f 1
+${SCRIPT} -i test/input-utf8.csv -o output.csv -d 201610 -f 1 || exit $?
 diff_outputfile output.csv test/output-utf8.csv test/input-utf8.csv
 
-${SCRIPT} -i test/input-sjis.csv -o output.csv -d 201610 -f 1
+${SCRIPT} -i test/input-sjis.csv -o output.csv -d 201610 -f 1 || exit $?
 diff_outputfile output.csv test/output-sjis.csv test/input-sjis.csv
 
-${SCRIPT} -i test/input-euc.csv -o output.csv -d 201610 -f 1
+${SCRIPT} -i test/input-euc.csv -o output.csv -d 201610 -f 1 || exit $?
 diff_outputfile output.csv test/output-euc.csv test/input-euc.csv
 
-${SCRIPT} -i test/input-anotherdate.csv -o output.csv -d 201702 -f 1
+${SCRIPT} -i test/input-anotherdate.csv -o output.csv -d 201702 -f 1 || exit $?
 diff_outputfile output.csv test/output-anotherdate.csv test/input-anotherdate.csv
 
-${SCRIPT} -i test/input-anotherdate.csv -o output.csv -d 201703 -f 1
+${SCRIPT} -i test/input-anotherdate.csv -o output.csv -d 201703 -f 1 || exit $?
 diff_outputfile output.csv test/output-empty.csv test/input-anotherdate.csv
 
-${SCRIPT} -i test/input-anotherformat.csv -o output.csv -d 201610 -f 0
+${SCRIPT} -i test/input-anotherformat.csv -o output.csv -d 201610 -f 0 || exit $?
 diff_outputfile output.csv test/output-anotherformat.csv test/input-anotherformat.csv
 
-${SCRIPT} -i test/input-anotherformat.csv -o output.csv -d 201610
+${SCRIPT} -i test/input-anotherformat.csv -o output.csv -d 201610 || exit $?
 diff_outputfile output.csv test/output-anotherformat.csv test/input-anotherformat.csv
 
 rm output.csv

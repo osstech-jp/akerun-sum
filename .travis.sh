@@ -15,6 +15,15 @@ diff_outputfile() {
     rm log
   fi
 }
+
+init() {
+  python3 -m venv ${VENV}
+  ./${VENV}/bin/python -m pip install -U pip setuptools wheel
+  ./${VENV}/bin/python -m pip install .
+}
+
+init
+
 python3 akerun_sum.py -i test/input-utf8.csv -o output.csv -d 201610 -f 1 || exit $?
 diff_outputfile output.csv test/output-utf8.csv test/input-utf8.csv
 
