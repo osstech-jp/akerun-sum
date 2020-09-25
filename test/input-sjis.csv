@@ -1,4 +1,4 @@
-DATE,AKERUN,USER,LOCK,CLIENT
+日時,AKERUN,ユーザー名,アクション,CLIENT
 2016/10/6 8:38,執務室入口,山田 太郎,解錠,Akerun App iOS iPhone
 2016/10/6 8:38,執務室入口,,施錠,オートロック
 2016/10/6 8:40,執務室入口,,解錠,ボタン

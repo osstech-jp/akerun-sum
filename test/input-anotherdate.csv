@@ -1,4 +1,4 @@
-"DATE","AKERUN","USER","LOCK","CLIENT"
+"日時","AKERUN","ユーザー名","アクション","CLIENT"
 "2017-02-09 13:29:32","akerun","深川 麻衣","解錠","Akerun App iOS iPhone"
 "2017-02-09 13:29:35","akerun","深川 麻衣","施錠","Akerun App iOS iPhone"
 "2017-02-09 13:30:23","akerun","深川 麻衣","入室","NFC"

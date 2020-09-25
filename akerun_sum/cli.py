@@ -12,7 +12,7 @@ import os
 DAYSTART = '0300'
 ROUNDDOWNTIME = 15
 
-KEYS = {'date': 'DATE', 'user': 'USER', 'lock': 'LOCK'}
+KEYS = {'date': '日時', 'user': 'ユーザー名', 'lock': 'アクション'}
 
 
 def option_parser():
@@ -286,6 +286,3 @@ def main():
         output_data0(commandline_vars['output_filename'], encode, shaped_data)
     elif commandline_vars['format_num'] == 1:
         output_data1(commandline_vars['output_filename'], encode, shaped_data)
-  
-if __name__ == '__main__':
-    main()
