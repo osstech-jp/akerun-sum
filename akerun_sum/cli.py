@@ -286,6 +286,3 @@ def main():
         output_data0(commandline_vars['output_filename'], encode, shaped_data)
     elif commandline_vars['format_num'] == 1:
         output_data1(commandline_vars['output_filename'], encode, shaped_data)
-  
-if __name__ == '__main__':
-    main()
