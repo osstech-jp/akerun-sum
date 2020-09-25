@@ -9,6 +9,6 @@ python:
 install: true
 
 script:
-  ./test.sh
+  ./.travis.sh
 
 

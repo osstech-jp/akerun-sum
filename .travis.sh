@@ -2,6 +2,10 @@
 
 # test tool
 
+VENV=testenv
+PYTHON3=python3
+SCRIPT=akerun-sum
+
 diff_outputfile() {
   outfile=$1
   orgfile=$2
@@ -17,32 +21,33 @@ diff_outputfile() {
 }
 
 init() {
-  python3 -m venv ${VENV}
-  ./${VENV}/bin/python -m pip install -U pip setuptools wheel
-  ./${VENV}/bin/python -m pip install .
+  python3 -m pip install .
 }
 
 init
 
-python3 akerun_sum.py -i test/input-utf8.csv -o output.csv -d 201610 -f 1 || exit $?
+python3 -m pip list
+which akerun-sum
+
+${SCRIPT} -i test/input-utf8.csv -o output.csv -d 201610 -f 1 || exit $?
 diff_outputfile output.csv test/output-utf8.csv test/input-utf8.csv
 
-python3 akerun_sum.py -i test/input-sjis.csv -o output.csv -d 201610 -f 1 || exit $?
+${SCRIPT} -i test/input-sjis.csv -o output.csv -d 201610 -f 1 || exit $?
 diff_outputfile output.csv test/output-sjis.csv test/input-sjis.csv
 
-python3 akerun_sum.py -i test/input-euc.csv -o output.csv -d 201610 -f 1 || exit $?
+${SCRIPT} -i test/input-euc.csv -o output.csv -d 201610 -f 1 || exit $?
 diff_outputfile output.csv test/output-euc.csv test/input-euc.csv
 
-python3 akerun_sum.py -i test/input-anotherdate.csv -o output.csv -d 201702 -f 1 || exit $?
+${SCRIPT} -i test/input-anotherdate.csv -o output.csv -d 201702 -f 1 || exit $?
 diff_outputfile output.csv test/output-anotherdate.csv test/input-anotherdate.csv
 
-python3 akerun_sum.py -i test/input-anotherdate.csv -o output.csv -d 201703 -f 1 || exit $?
+${SCRIPT} -i test/input-anotherdate.csv -o output.csv -d 201703 -f 1 || exit $?
 diff_outputfile output.csv test/output-empty.csv test/input-anotherdate.csv
 
-python3 akerun_sum.py -i test/input-anotherformat.csv -o output.csv -d 201610 -f 0 || exit $?
+${SCRIPT} -i test/input-anotherformat.csv -o output.csv -d 201610 -f 0 || exit $?
 diff_outputfile output.csv test/output-anotherformat.csv test/input-anotherformat.csv
 
-python3 akerun_sum.py -i test/input-anotherformat.csv -o output.csv -d 201610 || exit $?
+${SCRIPT} -i test/input-anotherformat.csv -o output.csv -d 201610 || exit $?
 diff_outputfile output.csv test/output-anotherformat.csv test/input-anotherformat.csv
 
-echo "Success!!"
+rm output.csv
