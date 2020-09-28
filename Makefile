@@ -1,5 +1,5 @@
 PYTHON		= python3
-VENV		= venv
+VENV		= .venv
 ACTIVATE	= . ./${VENV}/bin/activate
 
 TARGET          = testpypi

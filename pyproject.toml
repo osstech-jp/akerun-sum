@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "akerun-sum"
+version = "1.2.2"
+description = "Enter and leave data totalization program for Akerun"
+license = "GPL-3.0-or-later"
+authors = ["KAWAI Shun <shun@osstech.co.jp>"]
+maintainers = ["KAWAI Shun <shun@osstech.co.jp>"]
+readme = "README.md"
+homepage = "https://github.com/osstech-jp/akerun-sum"
+repository = "https://github.com/osstech-jp/akerun-sum"
+keywords = ["akerun", "akerun-sum"]
+classifiers = [
+	"Environment :: Console",
+	"Natural Language :: Japanese",
+	"Operating System :: Microsoft :: Windows :: Windows 7",
+	"Operating System :: POSIX :: Linux",
+	"Programming Language :: Python :: 3.5",
+	"Programming Language :: Python :: 3.6",
+	"Programming Language :: Python :: 3.7",
+	"Programming Language :: Python :: 3.8",
+	"License :: OSI Approved :: GNU General Public License (GPL)"
+]
+packages = [
+	{ include = "akerun_sum" }
+]
+include = [
+	"LICENSE",
+	"changelog.rst"
+]
+
+[tool.poetry.dependencies]
+python = ">=3.5"
+click = ">=7.1"
+
+[tool.poetry.scripts]
+akerun-sum = "akerun_sum.cli:main"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
