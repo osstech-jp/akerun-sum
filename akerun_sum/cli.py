@@ -133,6 +133,10 @@ def output_data0(filename, encode, shaped_data):
                 day_list.append(timecard['day'])
     day_list.sort()
 
+    if len(shaped_data) == 0:
+        click.echo("output data is empty")
+        return
+
     period = shaped_data[0]['period']
 
     header = ['氏名', '就業日数', '就業時間']
@@ -196,6 +200,10 @@ def output_data0(filename, encode, shaped_data):
 
 
 def output_data1(filename, encode, shaped_data):
+    if len(shaped_data) == 0:
+        click.echo("output data is empty")
+        return
+
     with codecs.open(filename, 'w', encode) as f:
         writer = csv.writer(f, lineterminator=os.linesep)
         for data in shaped_data:
