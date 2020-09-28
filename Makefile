@@ -32,13 +32,14 @@ test: ${VENV}
 .PHONY: build
 build:
 	rm -rf dist build *.egg-info
+	${MAKE} init
 	${ACTIVATE} && python setup.py bdist_wheel sdist --format=gztar,zip
 	${ACTIVATE} && twine check dist/*
 
 .PHONY: upload
 upload:
 	${MAKE} build
-	${ACTIVATE} && twine upload --repository ${TARGET} dist/*.tar.gz dist/*.whl
+	${ACTIVATE} && twine upload --repository ${TARGET} dist/*.tar.gz dist/*.whl dist/*.zip
 
 
 .PHONY: clean

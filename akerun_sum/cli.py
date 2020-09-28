@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*- vim:shiftwidth=4:expandtab:
 
+import click
 import math
 import calendar
 import datetime
@@ -13,45 +14,6 @@ DAYSTART = '0300'
 ROUNDDOWNTIME = 15
 
 KEYS = {'date': '日時', 'user': 'ユーザー名', 'lock': 'アクション'}
-
-
-def option_parser():
-    usage = 'Usage: python {} \
-  -i <input filename> -o <output filename> \
-  -d <period(yyyymm)> [-f formatnumber]'\
-             .format(__file__)
-    arguments = sys.argv
-    if len(arguments) != 7 and len(arguments) != 9:
-        print(usage)
-        sys.exit()
-
-    index_number = [1, 3, 5]
-    if len(arguments) == 9:
-        index_number = [1, 3, 5, 7]
-
-    # default
-    format_num = 0
-    for index in index_number:
-        option = arguments[index]
-        if option == '-i':
-            input_filename = arguments[index + 1]
-        elif option == '-o':
-            output_filename = arguments[index + 1]
-        elif option == '-d':
-            period = arguments[index + 1]
-        elif option == '-f':
-            format_num = int(arguments[index + 1])
-            if format_num not in [0, 1]:
-                print('This format number is not exist.')
-                sys.exit()
-        else:
-            print(usage)
-            sys.exit()
-
-    return {'input_filename': input_filename,
-            'output_filename': output_filename,
-            'period': period,
-            'format_num': format_num}
 
 
 def input_data(filename):
@@ -87,7 +49,8 @@ def data_shaping(data_list, period):
             except:
                 pass
     # data mining
-    period_start = datetime.datetime.strptime(period, '%Y%m')
+    period_start = period
+    period_str = period.strftime('%Y%m')
     day_range = calendar.monthrange(period_start.year, period_start.month)[1]
     period_end = period_start + datetime.timedelta(days=day_range)
 
@@ -105,7 +68,7 @@ def data_shaping(data_list, period):
                 user_list.append(data[KEYS['user']])
                 shaped_data.append({
                     'name': data[KEYS['user']], 'timecard_data': [],
-                    'writed_days': [], 'period': period})
+                    'writed_days': [], 'period': period_str})
 
     # data reconstruction
     for data in mining_data:
@@ -278,8 +241,18 @@ def output_data1(filename, encode, shaped_data):
             writer.writerow(['', '', '', '', '', ''])
 
 
-def main():
-    commandline_vars = option_parser()
+@click.command()
+@click.option('-i', '--input-filename', required=True, type=click.Path(exists=True))
+@click.option('-o', '--output-filename', required=True, type=click.Path())
+@click.option('-d', '--period', required=True, type=click.DateTime(['%Y%m']))
+@click.option('-f', '--format', default='0', show_default=True, type=click.Choice(['0', '1']))
+def main(input_filename, output_filename, period, format):
+    commandline_vars = {
+            'input_filename': input_filename,
+            'output_filename': output_filename,
+            'period': period,
+            'format_num': int(format),
+            }
     data_list, encode = input_data(commandline_vars['input_filename'])
     shaped_data = data_shaping(data_list, commandline_vars['period'])
     if commandline_vars['format_num'] == 0:
