@@ -18,6 +18,19 @@ diff_outputfile() {
   else
     echo "$inputfile Success"
     rm log
+    rm ${outfile}
+  fi
+}
+
+empty_outputfile() {
+  outfile=$1
+  inputfile=$2
+  errmasage="err when used [${inputfile}]"
+  if [ -e ${outfile} ]; then
+    echo ${errmessage}
+    exit 1
+  else
+    echo "$inputfile Success"
   fi
 }
 
@@ -41,8 +54,8 @@ diff_outputfile output.csv test/output-euc.csv test/input-euc.csv
 ${SCRIPT} -i test/input-anotherdate.csv -o output.csv -d 201702 -f 1 || exit $?
 diff_outputfile output.csv test/output-anotherdate.csv test/input-anotherdate.csv
 
-${SCRIPT} -i test/input-anotherdate.csv -o output.csv -d 201703 -f 1 || exit $?
-diff_outputfile output.csv test/output-empty.csv test/input-anotherdate.csv
+${SCRIPT} -i test/input-anotherdate.csv -o output-empty.csv -d 201703 -f 1 || exit $?
+empty_outputfile output.csv test/input-anotherdate.csv
 
 ${SCRIPT} -i test/input-anotherformat.csv -o output.csv -d 201610 -f 0 || exit $?
 diff_outputfile output.csv test/output-anotherformat.csv test/input-anotherformat.csv
@@ -50,5 +63,5 @@ diff_outputfile output.csv test/output-anotherformat.csv test/input-anotherforma
 ${SCRIPT} -i test/input-anotherformat.csv -o output.csv -d 201610 || exit $?
 diff_outputfile output.csv test/output-anotherformat.csv test/input-anotherformat.csv
 
-rm output.csv
+rm -f output.csv
 rm -r ${VENV}
