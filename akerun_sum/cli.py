@@ -37,7 +37,7 @@ def input_data(filename):
 
 def data_shaping(data_list, period):
     # 2:00 -> 23:00
-    date_format_list = ['%Y/%m/%d %H:%M', '%Y-%m-%d %H:%M:%S']
+    date_format_list = ['%Y/%m/%d %H:%M:%S', '%Y-%m-%d %H:%M']
     day_start = datetime.datetime.strptime(DAYSTART, '%H%M')
     for data in data_list:
         for date_format in date_format_list:
@@ -46,7 +46,7 @@ def data_shaping(data_list, period):
                 data[KEYS['date']] -= datetime.timedelta(hours=day_start.hour)
                 data[KEYS['date']] -= datetime.timedelta(minutes=day_start.minute)
                 break
-            except:
+            except ValueError:
                 pass
     # data mining
     period_start = period
@@ -267,3 +267,6 @@ def main(input_filename, output_filename, period, format):
         output_data0(commandline_vars['output_filename'], encode, shaped_data)
     elif commandline_vars['format_num'] == 1:
         output_data1(commandline_vars['output_filename'], encode, shaped_data)
+
+if __name__ == '__main__':
+    main()
